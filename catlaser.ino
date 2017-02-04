@@ -129,10 +129,10 @@ void loop()
     servoAngleHorz += currJitterAngleHorz;
   }
 
-  Serial.println("Jitter Level");
-  Serial.println(jitterLevel, DEC);
-  Serial.println("Jitter Sensitivity");
-  Serial.println(jitterSensitivity, DEC);
+//  Serial.println("Jitter Level");
+//  Serial.println(jitterLevel, DEC);
+//  Serial.println("Jitter Sensitivity");
+//  Serial.println(jitterSensitivity, DEC);
 //  Serial.println("Servo Angle Vert");
 //  Serial.println(servoAngleVert, DEC);
 //  Serial.println("Servo Angle Horz");
