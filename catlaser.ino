@@ -25,10 +25,10 @@ const int START_ANGLE_HORZ = 90;
 const int JITTER_LEVEL_MIN = 1;
 const int JITTER_LEVEL_MAX = 10;
 
-const int LOOP_DELAY = 5;
-const int JITTER_COUNT_MAX = 6; //How many loops before the jitter direciton is reset
-const float JITTER_SENSITIVITY_MAX = 2.7 * LOOP_DELAY; //How intense the jitter is (how far it can wander in a single loop)
-const int JITTER_PAUSE_MAX = 6; //How long of a pause is taken between jitters. Random number between 0 and this is taken
+const int LOOP_DELAY = 10;
+const int JITTER_COUNT_MAX = 5; //How many loops before the jitter direciton is reset
+const float JITTER_SENSITIVITY_MAX = .3 * LOOP_DELAY; //How intense the jitter is (how far it can wander in a single loop)
+const int JITTER_PAUSE_MAX = 10; //How long of a pause is taken between jitters. Random number between 0 and this is taken
 
 IRrecv irrecv(IR_PIN);
 decode_results ir_results;
