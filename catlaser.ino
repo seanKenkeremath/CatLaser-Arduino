@@ -7,6 +7,7 @@ const int SERVO_PIN_VERT = 9;
 const int SERVO_PIN_HORZ = 6;
 const int LASER_PIN = 4;
 const int SWITCH_PIN = 2;
+const int POT_PIN = A0;
 
 const int ANGLE_MAX_VERT = 80;
 const int ANGLE_MIN_VERT = 10;
@@ -16,11 +17,11 @@ const int START_ANGLE_VERT = 45;
 const int START_ANGLE_HORZ = 90;
 
 const int JITTER_LEVEL_MIN = 1;
-const int JITTER_LEVEL_MAX = 10;
+const int JITTER_LEVEL_MAX = 100;
 
 const int LOOP_DELAY = 10;
 const int JITTER_COUNT_MAX = 5; //How many loops before the jitter direciton is reset
-const float JITTER_SENSITIVITY_MAX = .3 * LOOP_DELAY; //How intense the jitter is (how far it can wander in a single loop)
+const float JITTER_SENSITIVITY_MAX = .6 * LOOP_DELAY; //How intense the jitter is (how far it can wander in a single loop)
 const int JITTER_PAUSE_MAX = 10; //How long of a pause is taken between jitters. Random number between 0 and this is taken
 
 Servo servoVert;
@@ -52,6 +53,16 @@ void setup ()
 
 void calculateJitterSensitivity()
 {
+  if (jitterLevel < JITTER_LEVEL_MIN)
+  {
+    jitterLevel = JITTER_LEVEL_MIN;
+  }
+
+  if (jitterLevel > JITTER_LEVEL_MAX)
+  {
+    jitterLevel = JITTER_LEVEL_MAX;
+  }
+  
   jitterSensitivity = JITTER_SENSITIVITY_MAX / (float)JITTER_LEVEL_MAX * (float)jitterLevel;
 }
 
@@ -63,51 +74,16 @@ void recenter ()
 
 void loop()
 {
-//  if (irrecv.decode(&ir_results))
-//  {
-//    ButtonPress button = translateIR();
-//    switch (button)
-//    {
-//      case POWER: laserOn = !laserOn;
-//        if (laserOn)
-//        {
-//          digitalWrite(LASER_PIN, HIGH);
-//        }
-//        else
-//        {
-//          recenter();
-//          digitalWrite(LASER_PIN, LOW);
-//        }
-//        break;
-//      case PLUS:
-//        jitterLevel++;
-//        if (jitterLevel > JITTER_LEVEL_MAX)
-//        {
-//          jitterLevel = JITTER_LEVEL_MAX;
-//        }
-//        calculateJitterSensitivity();
-//        break;
-//      case MINUS:
-//        jitterLevel--;
-//        if (jitterLevel < JITTER_LEVEL_MIN)
-//        {
-//          jitterLevel = JITTER_LEVEL_MIN;
-//        }
-//        calculateJitterSensitivity();
-//        break;
-//    }
-//    irrecv.resume(); // receive the next value
-//  }
-
+  
   boolean switchOn = digitalRead(SWITCH_PIN) == LOW;
 
   if (switchOn != laserOn)
   {
     //switch has changed
     laserOn = switchOn;
-    recenter();
     if (laserOn)
     {
+      recenter();
       digitalWrite(LASER_PIN, HIGH);
     }
     else
@@ -120,6 +96,10 @@ void loop()
   {
     return;
   }
+
+  //Set jitter level based on knob:
+  jitterLevel = map(analogRead(POT_PIN), 0, 1023, JITTER_LEVEL_MIN, JITTER_LEVEL_MAX);
+  calculateJitterSensitivity();
 
   //Calculate new jitter if necessary
   if (jitterCount == 0)
